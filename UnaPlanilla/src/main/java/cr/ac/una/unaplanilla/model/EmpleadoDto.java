@@ -32,7 +32,7 @@ public class EmpleadoDto {
     public ObjectProperty<LocalDate> fechaSalida;
     public SimpleBooleanProperty estado;
     private Long version;
-    // TODO
+    private String token ;
     private Boolean modificado;
 
     public EmpleadoDto() {
@@ -113,7 +113,7 @@ public class EmpleadoDto {
     }
 
     public String getAdministrador() {
-        return administrador.get()? "S":"N";
+        return administrador.get() ? "S" : "N";
     }
 
     public void setAdministrador(String administrador) {
@@ -176,7 +176,15 @@ public class EmpleadoDto {
         this.modificado = modificado;
     }
 
-     @Override
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 7;
         hash = 61 * hash + Objects.hashCode(this.id);

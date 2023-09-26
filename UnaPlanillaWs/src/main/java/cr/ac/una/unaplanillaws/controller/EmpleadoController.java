@@ -7,7 +7,9 @@ package cr.ac.una.unaplanillaws.controller;
 import cr.ac.una.unaplanillaws.model.EmpleadoDto;
 import cr.ac.una.unaplanillaws.service.EmpleadoService;
 import cr.ac.una.unaplanillaws.util.CodigoRespuesta;
+import cr.ac.una.unaplanillaws.util.JwTokenHelper;
 import cr.ac.una.unaplanillaws.util.Respuesta;
+import cr.ac.una.unaplanillaws.util.Secure;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.Consumes;
@@ -32,6 +34,7 @@ import java.util.logging.Logger;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Empleados", description = "Operaciones sobre empleados")
+@Secure
 public class EmpleadoController {
 
     @EJB
@@ -110,7 +113,7 @@ public class EmpleadoController {
                 return Response.status(res.getCodigoRespuesta().getValue()).entity(res.getMensaje()).build();
             }
             EmpleadoDto empleadoDto = (EmpleadoDto) res.getResultado("Empleado");
-            //empleadoDto.setToken(JwTokenHelper.getInstance().generatePrivateKey(usuario));
+            empleadoDto.setToken(JwTokenHelper.getInstance().generatePrivateKey(usuario));
             return Response.ok(empleadoDto).build();
         } catch (Exception ex) {
             Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);

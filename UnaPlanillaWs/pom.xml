@@ -34,9 +34,25 @@
             <artifactId>swagger-jaxrs2-jakarta</artifactId>
             <version>2.1.13</version>
         </dependency>
+        
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.10.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.10.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.10.7</version>
+        </dependency>
     </dependencies>
     
-     <build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,7 +97,7 @@
                             </artifactItems>
                         </configuration>
                     </execution>
-                   <!--Obtenemos el Swagger-UI -->
+                    <!--Obtenemos el Swagger-UI -->
                     <execution>
                         <id>get-swagger</id>
                         <phase>prepare-package</phase>
@@ -103,7 +119,7 @@
                     
                 </executions>
             </plugin>
-            <!--Empaquetemos en nuestro WAR en la sección de docs el Swagger-UI-->
+            <!--Empaquetemos en nuestro WAR en la secciï¿½n de docs el Swagger-UI-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
