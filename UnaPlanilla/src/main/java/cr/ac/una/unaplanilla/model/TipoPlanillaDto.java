@@ -127,9 +127,13 @@ public class TipoPlanillaDto {
     }
 
     // TODO
+    public void setEmpleados(List<EmpleadoDto> empleados) {
+        this.empleados = FXCollections.observableArrayList(empleados);
+    }
+    /*
     public void setEmpleados(ObservableList<EmpleadoDto> empleados) {
         this.empleados = empleados;
-    }
+    }*/
 
     public List<EmpleadoDto> getEmpleadosEliminados() {
         return empleadosEliminados;

@@ -31,6 +31,7 @@ import javafx.scene.layout.AnchorPane;
 import cr.ac.una.unaplanilla.service.EmpleadoService;
 import cr.ac.una.unaplanilla.model.EmpleadoDto;
 import cr.ac.una.unaplanilla.util.BindingUtils;
+import cr.ac.una.unaplanilla.util.FlowController;
 import cr.ac.una.unaplanilla.util.Formato;
 import cr.ac.una.unaplanilla.util.Mensaje;
 import cr.ac.una.unaplanilla.util.Respuesta;
@@ -104,12 +105,12 @@ public class EmpleadosViewController extends Controller implements Initializable
         nuevoEmpleado();
         indicarRequeridos();
     }
-    
+
     @Override
     public void initialize() {
 
     }
-    
+
     private void nuevoEmpleado() {
         unbindEmpleado();
         this.empleadoDto = new EmpleadoDto();
@@ -128,14 +129,14 @@ public class EmpleadosViewController extends Controller implements Initializable
         Boolean validos = true;
         String invalidos = "";
         for (Node node : requeridos) {
-            if (node instanceof JFXTextField && (((JFXTextField) node).getText()==null || ((JFXTextField) node).getText().isBlank())) {
+            if (node instanceof JFXTextField && (((JFXTextField) node).getText() == null || ((JFXTextField) node).getText().isBlank())) {
                 if (validos) {
                     invalidos += ((JFXTextField) node).getPromptText();
                 } else {
                     invalidos += "," + ((JFXTextField) node).getPromptText();
                 }
                 validos = false;
-            } else if (node instanceof JFXPasswordField && (((JFXPasswordField) node).getText()==null || ((JFXPasswordField) node).getText().isBlank())) {
+            } else if (node instanceof JFXPasswordField && (((JFXPasswordField) node).getText() == null || ((JFXPasswordField) node).getText().isBlank())) {
                 if (validos) {
                     invalidos += ((JFXPasswordField) node).getPromptText();
                 } else {
@@ -198,7 +199,7 @@ public class EmpleadosViewController extends Controller implements Initializable
         chkAdministrador.selectedProperty().unbindBidirectional(empleadoDto.administrador);
         BindingUtils.unbindToggleGroupToProperty(tggGenero, empleadoDto.genero);
     }
-    
+
     private void validarAdministrador() {
         if (chkAdministrador.isSelected()) {
             requeridos.addAll(Arrays.asList(txtUsuario, txtClave));
@@ -212,7 +213,7 @@ public class EmpleadosViewController extends Controller implements Initializable
             txtClave.setDisable(true);
         }
     }
-    
+
     @FXML
     private void onKeyPressedTxtId(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER && !txtId.getText().isEmpty()) {
@@ -238,7 +239,7 @@ public class EmpleadosViewController extends Controller implements Initializable
             new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar Empleado", getStage(), "Ocurrio un error consultando el empleado.");
         }
     }
-    
+
     @FXML
     private void onActionChkAdministrador(ActionEvent event) {
         validarAdministrador();
@@ -277,12 +278,19 @@ public class EmpleadosViewController extends Controller implements Initializable
 
     @FXML
     private void buscarEmpleado(ActionEvent event) {
+        BusquedaViewController busquedaController = (BusquedaViewController) FlowController.getInstance().getController("BusquedaView");
+        busquedaController.busquedaEmpleados();
+        FlowController.getInstance().goViewInWindowModal("BusquedaView", getStage(), true);
+        EmpleadoDto empleadoDto = (EmpleadoDto) busquedaController.getResultado();
+        if (empleadoDto != null) {
+            cargarEmpleado(empleadoDto.getId());
+        }
     }
 
     @FXML
     private void eliminarEmpleado(ActionEvent event) {
         try {
-            if (this.empleadoDto.getId()== null) {
+            if (this.empleadoDto.getId() == null) {
                 new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar empleado", getStage(), "Debe cargar el empleado que desea eliminar.");
             } else {
 
