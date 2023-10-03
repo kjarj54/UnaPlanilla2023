@@ -71,7 +71,7 @@ public class PlanillasController {
     @Path("/eliminartipoplanilla/{id}")
     public Response eliminarPlanilla(@PathParam("id") Long id) {
         try {
-            Respuesta respuesta = tipoPlanillaService.getTipoPlanilla(id);
+            Respuesta respuesta = tipoPlanillaService.eliminarTipoPlanilla(id);
             if (!respuesta.getEstado()) {
                 return Response.status(respuesta.getCodigoRespuesta().getValue()).entity(respuesta.getMensaje()).build();
             }
