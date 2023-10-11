@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.Principal;
 
-
 /**
  *
  * @author Kevin
@@ -69,11 +68,15 @@ public class SecurityFilter implements ContainerRequestFilter {
             // Validate the token
             try {
                 Claims claims = jwTokenHelper.claimKey(token);
-                /*if (method.getName().equals(RENEWAL_SERVICE_PATH)) {
+                if (method.getName().equals(RENEWAL_SERVICE_PATH)) {
                     if (!(boolean) claims.getOrDefault("rnw", false)) {
                         abortWithUnauthorized(request, "Invalid Autorization");
                     }
-                }*/
+                } else {
+                    if ((boolean) claims.getOrDefault("rnw", false)) {
+                        abortWithUnauthorized(request, "Invalid Autorization");
+                    }
+                }
                 final SecurityContext currentSecurityContext = request.getSecurityContext();
                 request.setSecurityContext(new SecurityContext() {
 
