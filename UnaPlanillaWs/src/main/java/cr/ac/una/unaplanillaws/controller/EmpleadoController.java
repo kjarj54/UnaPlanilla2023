@@ -10,8 +10,16 @@ import cr.ac.una.unaplanillaws.util.CodigoRespuesta;
 import cr.ac.una.unaplanillaws.util.JwTokenHelper;
 import cr.ac.una.unaplanillaws.util.Respuesta;
 import cr.ac.una.unaplanillaws.util.Secure;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ejb.EJB;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -36,6 +44,7 @@ import java.util.logging.Logger;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Empleados", description = "Operaciones sobre empleados")
+@SecurityRequirement(name= "jwt-auth")
 @Secure
 public class EmpleadoController {
 
@@ -63,6 +72,11 @@ public class EmpleadoController {
 
     @GET
     @Path("/empleados/{cedula}/{nombre}/{pApellido}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Búsqueda exitosa", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmpleadoDto.class))),
+        @ApiResponse(responseCode = "404", description = "No encontrado", content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+        @ApiResponse(responseCode = "500", description = "Error interno durante la búsqueda del empleado", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    })
     public Response getEmpleados(@PathParam("cedula") String cedula, @PathParam("nombre") String nombre, @PathParam("pApellido") String pApellido) {
         try {
             Respuesta res = empleadoService.getEmpleados(cedula, nombre, pApellido);
@@ -80,7 +94,13 @@ public class EmpleadoController {
     //TODO
     @POST
     @Path("/empleado")
-    public Response guardarEmpleado(EmpleadoDto empleado) {
+    @Operation(description = "Insertar o modificar un empleado")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Empleado modificado exitosamente", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmpleadoDto.class))),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+        @ApiResponse(responseCode = "500", description = "Error interno durante el guardado del empleado", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    })
+    public Response guardarEmpleado(@Valid EmpleadoDto empleado) {
         try {
             Respuesta res = empleadoService.guardarEmpleado(empleado);
             if (!res.getEstado()) {
@@ -110,7 +130,13 @@ public class EmpleadoController {
 
     @GET
     @Path("/usuario/{usuario}/{clave}")
-    public Response getUsuario(@PathParam("usuario") String usuario, @PathParam("clave") String clave) {
+    @Operation(description = "Autenticacion Usuario")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Búsqueda exitosa", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmpleadoDto.class))),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+        @ApiResponse(responseCode = "500", description = "Error interno durante la autenticacion del empleado", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    })
+    public Response getUsuario(@Parameter(description = "Codigo de usuario") @PathParam("usuario") String usuario,@Parameter(description = "Clave del usuario")  @PathParam("clave") String clave) {
         try {
             Respuesta res = empleadoService.validarUsuario(usuario, clave);
             if (!res.getEstado()) {
@@ -127,6 +153,12 @@ public class EmpleadoController {
 
     @GET
     @Path("/renovar")
+    @Operation(description = "Genera un nuevo token a partir del token de renovacion")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Renovacion del token exitosa", content = @Content(mediaType = MediaType.TEXT_PLAIN,schema = @Schema(implementation = EmpleadoDto.class))),
+        @ApiResponse(responseCode = "401", description = "No se renovo el token", content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+        @ApiResponse(responseCode = "500", description = "Error renovando el token", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    })
     public Response renovarToken() {
         try {
             String usuarioRequest = securityContext.getUserPrincipal().getName();

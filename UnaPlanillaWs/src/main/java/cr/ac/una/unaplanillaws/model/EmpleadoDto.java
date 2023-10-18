@@ -5,6 +5,11 @@
  */
 package cr.ac.una.unaplanillaws.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,21 +18,36 @@ import java.util.Objects;
  *
  * @author Carlos
  */
-
+@Schema(description = "Trabajador")
 public class EmpleadoDto {
 
+    @Schema(description ="Id del empleado",example = "1")
     private Long id;
+    @NotNull(message = "El nombre del empleado no puede ser nulo")
+    @NotEmpty(message = "El nombre del empleado no puede estar vacio")
+    @Size(min = 1, max = 30, message = "El nombre del empleado debe tener una longitud de 1 o 30 caracteres")
+    @Schema(description = "Nombre del empleado",example = "Kevin")
     private String nombre;
     private String primerApellido;
     private String segundoApellido;
     private String cedula;
     private String genero;
+    @NotNull(message = "El correo del empleado no puede ser nulo")
+    @NotEmpty(message = "El correo del empleado no puede estar vacio")
+    @Size( max = 80, message = "El correo del empleado debe tener una longitud de 80 caracteres")
+    @Pattern(regexp = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)(\\.[A-Za-z]{2,})", message = "El formato del correo del empleado no es válido")
+    @Schema(description = "Correo del empleado")
     private String correo;
     private String administrador;
     private String usuario;
     private String clave;
     private LocalDate fechaIngreso;
     private LocalDate fechaSalida;
+    @NotNull(message = "El estado del empleado no puede ser nulo")
+    @NotEmpty(message = "El estado del empleado no puede estar vacio")
+    @Size(min = 1, max = 1, message = "El estado del empleado debe tener una longitud de 1 caracter")
+    @Pattern(regexp = "A|I",message = "El estado del empleado no es valido")
+    @Schema(description = "Estado del empleado",example = "A", allowableValues = "A,I")
     private String estado;
     private Long version;
     private Boolean modificado;
@@ -52,7 +72,7 @@ public class EmpleadoDto {
         this.usuario = empleado.getUsuario();
         this.clave = empleado.getClave();
         this.fechaIngreso = empleado.getFechaIngreso();
-        if (empleado.getFechaSalida()!= null) {
+        if (empleado.getFechaSalida() != null) {
             this.fechaSalida = empleado.getFechaSalida();
         } else {
             this.fechaSalida = null;
@@ -165,7 +185,7 @@ public class EmpleadoDto {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
+
     public Boolean getModificado() {
         return modificado;
     }
@@ -197,7 +217,6 @@ public class EmpleadoDto {
     public void setToken(String token) {
         this.token = token;
     }
-    
 
     @Override
     public int hashCode() {
